@@ -7,10 +7,10 @@ def check_python_version():
 def check_api():
     from api_client import YandexWeatherAPI
 
-    CITY_NAME_FOR_TEST = "MOSCOW"
+    city_name_for_test: str = "MOSCOW"
 
-    ywAPI = YandexWeatherAPI()
-    resp = ywAPI.get_forecasting(CITY_NAME_FOR_TEST)
+    yw_api = YandexWeatherAPI()
+    resp = yw_api.get_forecasting(city_name=city_name_for_test)
     attr = resp.get("info")
     print(attr)
 

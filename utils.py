@@ -1,4 +1,4 @@
-CITIES = {
+CITIES: dict[str, str] = {
     "MOSCOW": "https://code.s3.yandex.net/async-module/moscow-response.json",
     "PARIS": "https://code.s3.yandex.net/async-module/paris-response.json",
     "LONDON": "https://code.s3.yandex.net/async-module/london-response.json",
@@ -15,10 +15,10 @@ CITIES = {
     "ROMA": "https://code.s3.yandex.net/async-module/roma-response.json",
     "CAIRO": "https://code.s3.yandex.net/async-module/cairo-response.json",
 }
-ERR_MESSAGE_TEMPLATE = "Something wrong. Please contact with mentor."
+ERR_MESSAGE_TEMPLATE: str = "Something wrong. Please contact with mentor."
 
-MIN_MAJOR_PYTHON_VER = 3
-MIN_MINOR_PYTHON_VER = 9
+MIN_MAJOR_PYTHON_VER: int = 3
+MIN_MINOR_PYTHON_VER: int = 9
 
 
 def check_python_version():
@@ -28,8 +28,4 @@ def check_python_version():
         sys.version_info.major < MIN_MAJOR_PYTHON_VER
         or sys.version_info.minor < MIN_MINOR_PYTHON_VER
     ):
-        raise Exception(
-            "Please use python version >= {}.{}".format(
-                MIN_MAJOR_PYTHON_VER, MIN_MINOR_PYTHON_VER
-            )
-        )
+        raise Exception(f"Please use python version >= {MIN_MAJOR_PYTHON_VER}.{MIN_MINOR_PYTHON_VER}")
