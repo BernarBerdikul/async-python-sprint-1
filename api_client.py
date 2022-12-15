@@ -3,7 +3,7 @@ import logging
 import json
 from urllib.request import urlopen
 
-from utils import CITIES, ERR_MESSAGE_TEMPLATE
+from utils import constants
 
 logger = logging.getLogger()
 
@@ -29,12 +29,12 @@ class YandexWeatherAPI:
             return resp
         except Exception as ex:
             logger.error(ex)
-            raise Exception(ERR_MESSAGE_TEMPLATE)
+            raise Exception(constants.ERR_MESSAGE_TEMPLATE)
 
     @staticmethod
     def _get_url_by_city_name(city_name: str) -> str:
         try:
-            return CITIES[city_name]
+            return constants.CITIES[city_name]
         except KeyError:
             raise Exception("Please check that city {} exists".format(city_name))
 

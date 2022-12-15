@@ -10,7 +10,7 @@ from tasks import (
     DataCalculationTask,
     DataFetchingTask,
 )
-from utils import CITIES
+from utils import constants
 
 
 def forecast_weather():
