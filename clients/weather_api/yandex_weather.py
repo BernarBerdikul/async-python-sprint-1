@@ -7,11 +7,11 @@ from utils import constants
 
 logger = logging.getLogger()
 
+__all__ = ("YandexWeatherAPI",)
+
 
 class YandexWeatherAPI:
-    """
-    Base class for requests
-    """
+    """Base class for requests."""
 
     @staticmethod
     def _do_req(url):

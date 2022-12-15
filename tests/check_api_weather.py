@@ -1,4 +1,4 @@
-from api_client import YandexWeatherAPI
+from clients.weather_api import YandexWeatherAPI
 
 
 def check_api():
