@@ -1,5 +1,6 @@
 
 creds.ini
+.pytest_cache
 .idea/
 __pycache__/
 *.pyc
