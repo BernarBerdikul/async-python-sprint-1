@@ -1,6 +1,7 @@
 import json
 from dataclasses import dataclass
 from typing import Any
+
 from utils import constants
 
 __all__ = ('DataAggregationTask',)

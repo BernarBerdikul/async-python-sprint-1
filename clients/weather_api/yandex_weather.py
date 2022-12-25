@@ -1,6 +1,6 @@
 import http
-import logging
 import json
+import logging
 from urllib.request import urlopen
 
 from utils import constants
