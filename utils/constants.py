@@ -15,6 +15,9 @@ CITIES: dict[str, str] = {
     "ROMA": "https://code.s3.yandex.net/async-module/roma-response.json",
     "CAIRO": "https://code.s3.yandex.net/async-module/cairo-response.json",
 }
+WEATHER_WITHOUT_PRECIPITATION: list[str] = ['clear', 'partly', 'cloudy', 'overcast']
+RESULT_FILE: str = "result.json"
+
 ERR_MESSAGE_TEMPLATE: str = "Something wrong. Please contact with mentor."
 
 MIN_MAJOR_PYTHON_VER: int = 3
