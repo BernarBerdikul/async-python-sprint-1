@@ -15,17 +15,13 @@ class YandexWeatherAPI:
 
     @staticmethod
     def _do_req(url):
-        """Base request method"""
+        """Base request method."""
         try:
-            with urlopen(url) as req:
+            with urlopen(url=url) as req:
                 resp = req.read().decode("utf-8")
                 resp = json.loads(resp)
             if req.status != http.HTTPStatus.OK:
-                raise Exception(
-                    "Error during execute request. {}: {}".format(
-                        resp.status, resp.reason
-                    )
-                )
+                raise Exception(f"Error during execute request. {resp.status}: {resp.reason}")
             return resp
         except Exception as ex:
             logger.error(ex)
@@ -43,5 +39,5 @@ class YandexWeatherAPI:
         :param city_name: key as str
         :return: response data as json
         """
-        city_url = self._get_url_by_city_name(city_name)
-        return self._do_req(city_url)
+        city_url = self._get_url_by_city_name(city_name=city_name)
+        return self._do_req(url=city_url)
