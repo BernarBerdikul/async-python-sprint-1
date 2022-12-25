@@ -8,7 +8,6 @@ repos:
     -   id: check-yaml  # проверяет синтаксис .yaml файлов
     -   id: check-json  # проверяет синтаксис .json файлов
     -   id: double-quote-string-fixer  # заменяет " на '
-    -   id: requirements-txt-fixer  # сортирует записи в файле requirements.txt
 
 # Отсортировывает импорты в проекте
 -   repo: https://github.com/pycqa/isort
