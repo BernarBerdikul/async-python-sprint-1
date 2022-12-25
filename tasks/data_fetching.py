@@ -1,5 +1,3 @@
-
-
 __all__ = ('DataFetchingTask',)
 
 from dataclasses import dataclass
@@ -14,7 +12,7 @@ class DataFetchingTask:
     WEATHER_API: ClassVar[YandexWeatherAPI] = YandexWeatherAPI()
 
     def fetch(self) -> tuple[str, dict]:
-        print(f"{self.city_name}: запрашиваем погоду в городе.")
+        print(f'{self.city_name}: запрашиваем погоду в городе.')
         resp = self.WEATHER_API.get_forecasting(city_name=self.city_name)
         return self.city_name, resp
 

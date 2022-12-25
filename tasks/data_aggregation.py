@@ -12,7 +12,7 @@ class DataAggregationTask:
     aggregated_data: list[dict[str, Any]]
 
     def _save_in_file(self) -> None:
-        print(f"Сохраняем результат в файл {constants.RESULT_FILE}")
+        print(f'Сохраняем результат в файл {constants.RESULT_FILE}')
         payload = json.dumps(self.aggregated_data)
         with open(constants.RESULT_FILE, 'w') as f:
             f.write(payload)
