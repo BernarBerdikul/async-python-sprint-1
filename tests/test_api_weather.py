@@ -1,7 +1,7 @@
 from clients.weather_api import YandexWeatherAPI
 
 
-def check_api():
+def test_api():
     city_name_for_test: str = 'MOSCOW'
 
     yw_api = YandexWeatherAPI()
