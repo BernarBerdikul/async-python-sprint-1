@@ -6,6 +6,7 @@ from utils import constants
 __all__ = ('DataCalculationTask',)
 
 
+# Рейтинг по осадкам
 PRECIPITATION_RATING: dict[int, list[int]] = {
     1: [1, 2],
     2: [3, 4],
@@ -14,7 +15,7 @@ PRECIPITATION_RATING: dict[int, list[int]] = {
     5: [9, 10],
 }
 
-
+# Рейтинг по температуре
 TEMP_RATING: dict[int, list[int]] = {
     1: [0, 5],
     2: [5, 10],
@@ -26,16 +27,26 @@ TEMP_RATING: dict[int, list[int]] = {
 
 @dataclass
 class DataCalculationTask:
+    """
+    Класс для расчёта информаций о городе.
+    """
+
     city_name: str
     forecasts: list[dict[str, Any]]
     days: list = field(default_factory=list)
 
     @staticmethod
     def average(data: list[Any]) -> float:
+        """
+        Метод для подсчёта среднего арифметического значения.
+        """
         return round(sum(data) / len(data), 1)
 
     @staticmethod
     def count_hours_without_precipitation(hours: list) -> int:
+        """
+        Метод для подсчёта кол-ва часов без осадков.
+        """
         return len(
             [
                 h
@@ -49,6 +60,9 @@ class DataCalculationTask:
         average_week_temp: float,
         average_without_precipitation: float,
     ) -> int:
+        """
+        Метод для расчёта рейтинга города, в зависимости от погоды и температуры.
+        """
         rating: int = 0
         for rate, (l_p_border, r_p_border) in PRECIPITATION_RATING.items():
             if l_p_border <= average_without_precipitation <= r_p_border:
@@ -62,11 +76,17 @@ class DataCalculationTask:
 
     @staticmethod
     def filter_target_hours(hours: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """
+        Метод для фильтраций часов в период с 9:00 по 19:00.
+        """
         return [
             hour for hour in hours if 8 < int(hour['hour']) < 20
         ]
 
     def calculation(self) -> dict[str, Any]:
+        """
+        Метод для расчёта данных температуры и погоды в городе.
+        """
         wday_temp: list[float] = []
         wday_hours_without_precipitation: list[int] = []
         for forecast in self.forecasts:
@@ -115,4 +135,7 @@ class DataCalculationTask:
         }
 
     def __call__(self, *args, **kwargs) -> dict[str, Any]:
+        """
+        Определяем метод класса, для вызова как функцию.
+        """
         return self.calculation()

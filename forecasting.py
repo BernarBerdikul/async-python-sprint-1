@@ -14,12 +14,14 @@ def forecast_weather():
     """
     Анализ погодных условий по городам
     """
+    print('Шаг 1. Запрашиваем данные о погоде по городам.')
     with ThreadPoolExecutor() as pool:
         futures = [
             pool.submit(DataFetchingTask(city_name=city)) for city in constants.CITIES
         ]
         fetched_data: list[tuple[str, dict]] = [f.result() for f in futures]
 
+    print('Шаг 2. Рассчитываем погодные данные по городам.')
     with ProcessPoolExecutor() as pool:
         futures = [
             pool.submit(
@@ -32,9 +34,12 @@ def forecast_weather():
         ]
         calculated_data: list[dict[str, Any]] = [f.result() for f in futures]
 
+    print('Шаг 3. Сохраняем результат в json-файл.')
     DataAggregationTask(aggregated_data=calculated_data).run()
+
+    print('Шаг 4. Достаём результат из json-файла и находим лучший город.')
     best_city = DataAnalyzingTask().run()
-    print(best_city)
+    print('Лучшие города: ', best_city)
 
 
 if __name__ == '__main__':
