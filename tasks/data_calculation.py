@@ -1,4 +1,5 @@
-from dataclasses import dataclass, field
+from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass
 from typing import Any
 
 from utils import constants
@@ -30,10 +31,7 @@ class DataCalculationTask:
     """
     Класс для расчёта информаций о городе.
     """
-
-    city_name: str
-    forecasts: list[dict[str, Any]]
-    days: list = field(default_factory=list)
+    fetched_data: list[tuple[str, dict]]
 
     @staticmethod
     def average(data: list[Any]) -> float:
@@ -83,25 +81,26 @@ class DataCalculationTask:
             hour for hour in hours if 8 < int(hour['hour']) < 20
         ]
 
-    def calculation(self) -> dict[str, Any]:
+    def calculation(self, city_name: str, forecasts: list[dict[str, Any]]) -> dict[str, Any]:
         """
         Метод для расчёта данных температуры и погоды в городе.
         """
+        days: list = []
         wday_temp: list[float] = []
         wday_hours_without_precipitation: list[int] = []
-        for forecast in self.forecasts:
+        for forecast in forecasts:
             date = forecast['date']
-            print(f'[{date}]{self.city_name}: Фильтруем часы между 9:00 и 19:00.')
+            print(f'[{date}]{city_name}: Фильтруем часы между 9:00 и 19:00.')
             target_hours: list[dict[str, Any]] = self.filter_target_hours(
                 hours=forecast['hours'],
             )
-            print(f'[{date}]{self.city_name}: Получаем данные по часам осадков.')
+            print(f'[{date}]{city_name}: Получаем данные по часам осадков.')
             h_without_precipitation: int = self.count_hours_without_precipitation(
                 hours=target_hours,
             )
             wday_hours_without_precipitation.append(h_without_precipitation)
 
-            print(f'[{date}]{self.city_name}: Получаем данные по температурам.')
+            print(f'[{date}]{city_name}: Получаем данные по температурам.')
             average_day_temp: str = '-'
             if target_hours:
                 temp: float = self.average(
@@ -109,7 +108,7 @@ class DataCalculationTask:
                 )
                 average_day_temp = str(temp)
                 wday_temp.append(temp)
-            self.days.append(
+            days.append(
                 {
                     'date': date,
                     'hours_without_precipitation': h_without_precipitation,
@@ -124,18 +123,30 @@ class DataCalculationTask:
             average_week_temp=average_week_temp,
             average_without_precipitation=average_without_precipitation,
         )
-        print(f'[{self.city_name}]: Получен рейтинг города = {rating}.')
+        print(f'[{city_name}]: Получен рейтинг города = {rating}.')
         return {
-            'city_name': self.city_name,
-            'days': self.days,
+            'city_name': city_name,
+            'days': days,
             'average_week_temp': average_week_temp,
             'average_without_precipitation': average_without_precipitation,
             'rating': rating,
-            'forecasts': self.forecasts,
+            'forecasts': forecasts,
         }
 
-    def __call__(self, *args, **kwargs) -> dict[str, Any]:
+    def run(self) -> list[dict[str, Any]]:
         """
         Определяем метод класса, для вызова как функцию.
         """
-        return self.calculation()
+        with ProcessPoolExecutor() as pool:
+            futures = [
+                pool.submit(
+                    self.calculation,
+                    city_name=city_name,
+                    forecasts=result['forecasts'],
+                )
+                for city_name, result in self.fetched_data
+            ]
+            calculated_data: list[dict[str, Any]] = [
+                f.result() for f in futures
+            ]
+        return calculated_data

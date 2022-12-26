@@ -1,9 +1,11 @@
 __all__ = ('DataFetchingTask',)
 
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import ClassVar
 
 from clients.weather_api import YandexWeatherAPI
+from utils import constants
 
 
 @dataclass
@@ -12,19 +14,24 @@ class DataFetchingTask:
     Класс для получения данных из API погоды.
     """
 
-    city_name: str
     WEATHER_API: ClassVar[YandexWeatherAPI] = YandexWeatherAPI()
 
-    def fetch(self) -> tuple[str, dict]:
+    def fetch(self, city_name: str) -> tuple[str, dict]:
         """
         Метод для запроса данных по названию города.
         """
-        print(f'{self.city_name}: запрашиваем погоду в городе.')
-        resp = self.WEATHER_API.get_forecasting(city_name=self.city_name)
-        return self.city_name, resp
+        print(f'{city_name}: запрашиваем погоду в городе.')
+        resp = self.WEATHER_API.get_forecasting(city_name=city_name)
+        return city_name, resp
 
-    def __call__(self, *args, **kwargs) -> tuple[str, dict]:
-        """
-        Определяем метод класса, для вызова как функцию.
-        """
-        return self.fetch()
+    def run(self) -> list[tuple[str, dict]]:
+        with ThreadPoolExecutor() as pool:
+            futures = [
+                pool.submit(self.fetch, city_name=city)
+                for city in constants.CITIES
+            ]
+            fetched_data: list[tuple[str, dict]] = [
+                f.result()
+                for f in futures
+            ]
+        return fetched_data
