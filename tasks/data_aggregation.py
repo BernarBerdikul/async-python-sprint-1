@@ -20,7 +20,10 @@ class DataAggregationTask:
         Метод для сохранения результата в json-файл.
         """
         print(f'Сохраняем результат в файл {constants.RESULT_FILE}')
-        payload = json.dumps(self.aggregated_data)
+        payload = json.dumps(
+            self.aggregated_data,
+            ensure_ascii=False, indent=4,
+        )
         with open(constants.RESULT_FILE, 'w') as f:
             f.write(payload)
 
