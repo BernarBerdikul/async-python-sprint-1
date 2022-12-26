@@ -34,12 +34,12 @@ def forecast_weather():
         ]
         calculated_data: list[dict[str, Any]] = [f.result() for f in futures]
 
-    print('Шаг 3. Сохраняем результат в json-файл.')
-    DataAggregationTask(aggregated_data=calculated_data).run()
-
-    print('Шаг 4. Достаём результат из json-файла и находим лучший город.')
-    best_city = DataAnalyzingTask().run()
+    print('Шаг 3. Находим лучшие города.')
+    best_city = DataAnalyzingTask(calculated_data=calculated_data).run()
     print('Лучшие города: ', best_city)
+
+    print('Шаг 4. Сохраняем результат в json-файл.')
+    DataAggregationTask(aggregated_data=best_city).run()
 
 
 if __name__ == '__main__':

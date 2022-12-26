@@ -1,10 +1,7 @@
 __all__ = ('DataAnalyzingTask',)
 
-import json
 from dataclasses import dataclass, field
 from typing import Any
-
-from utils import constants
 
 
 @dataclass
@@ -13,23 +10,16 @@ class DataAnalyzingTask:
     Класс для поиска лучших городов.
     """
 
+    calculated_data: list[dict[str, Any]]
     max_rating: int = 0
-    aggregated_data: list = field(default_factory=list)
     sorted_data: list = field(default_factory=list)
-
-    def read_file(self):
-        """
-        Метод для загрузки результатов из файла.
-        """
-        with open(constants.RESULT_FILE) as f:
-            self.aggregated_data = json.loads(f.read())
 
     def sort_data(self) -> None:
         """
         Метод для сортировки городов по рейтингу.
         """
         self.sorted_data = sorted(
-            self.aggregated_data,
+            self.calculated_data,
             key=lambda x: x['rating'],
             reverse=True,
         )
@@ -51,8 +41,6 @@ class DataAnalyzingTask:
         """
         Метод для запуска сценария класса.
         """
-        self.read_file()
         self.sort_data()
         self.set_max_rating()
-        result = self.analyze_data()
-        return result
+        return self.analyze_data()
