@@ -1,11 +1,13 @@
 __all__ = ('DataFetchingTask',)
-
+import logging
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import ClassVar
 
 from clients.weather_api import YandexWeatherAPI
 from utils import constants
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -20,7 +22,7 @@ class DataFetchingTask:
         """
         Метод для запроса данных по названию города.
         """
-        print(f'{city_name}: запрашиваем погоду в городе.')
+        logger.info(f'{city_name}: запрашиваем погоду в городе.')
         resp = self.WEATHER_API.get_forecasting(city_name=city_name)
         return city_name, resp
 

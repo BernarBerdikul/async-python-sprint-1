@@ -1,3 +1,4 @@
+import logging
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from typing import Any
@@ -5,7 +6,7 @@ from typing import Any
 from utils import constants
 
 __all__ = ('DataCalculationTask',)
-
+logger = logging.getLogger(__name__)
 
 # Рейтинг по осадкам
 PRECIPITATION_RATING: dict[int, list[int]] = {
@@ -90,17 +91,23 @@ class DataCalculationTask:
         wday_hours_without_precipitation: list[int] = []
         for forecast in forecasts:
             date = forecast['date']
-            print(f'[{date}]{city_name}: Фильтруем часы между 9:00 и 19:00.')
+            logger.info(
+                f'[{date}]{city_name}: Фильтруем часы между 9:00 и 19:00.',
+            )
             target_hours: list[dict[str, Any]] = self.filter_target_hours(
                 hours=forecast['hours'],
             )
-            print(f'[{date}]{city_name}: Получаем данные по часам осадков.')
+            logger.info(
+                f'[{date}]{city_name}: Получаем данные по часам осадков.',
+            )
             h_without_precipitation: int = self.count_hours_without_precipitation(
                 hours=target_hours,
             )
             wday_hours_without_precipitation.append(h_without_precipitation)
 
-            print(f'[{date}]{city_name}: Получаем данные по температурам.')
+            logger.info(
+                f'[{date}]{city_name}: Получаем данные по температурам.',
+            )
             average_day_temp: str = '-'
             if target_hours:
                 temp: float = self.average(
@@ -123,7 +130,7 @@ class DataCalculationTask:
             average_week_temp=average_week_temp,
             average_without_precipitation=average_without_precipitation,
         )
-        print(f'[{city_name}]: Получен рейтинг города = {rating}.')
+        logger.info(f'[{city_name}]: Получен рейтинг города = {rating}.')
         return {
             'city_name': city_name,
             'days': days,

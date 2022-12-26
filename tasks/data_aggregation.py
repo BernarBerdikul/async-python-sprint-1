@@ -1,10 +1,13 @@
 import json
+import logging
 from dataclasses import dataclass
 from typing import Any
 
 from utils import constants
 
 __all__ = ('DataAggregationTask',)
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -19,7 +22,7 @@ class DataAggregationTask:
         """
         Метод для сохранения результата в json-файл.
         """
-        print(f'Сохраняем результат в файл {constants.RESULT_FILE}')
+        logger.info(f'Сохраняем результат в файл {constants.RESULT_FILE}')
         payload = json.dumps(
             self.aggregated_data,
             ensure_ascii=False, indent=4,
